@@ -50,5 +50,5 @@ ID:16,AGE:1,PATH:/tmp/test2.txt
 Thus, if you schedule a crontab job each day to run `./fudel -c`, in this case this means that `age` are the days left before the deletion.
 
 If you set the `--gui` option, when used in combination with `-n` and `-p`, it will show a GTK prompt where to insert the age.
-The usage is intended to be integrated easier into other tools (e.g. a file manager).
-For example, with Thunar, you can set a custom action executing: `./fudel -n '%f' -g`.
+The usage is intended to be easier integrated into other tools (e.g. a file manager).
+For example, considering Thunar, you can set a custom action executing: `./fudel -n '%f' -g`.
