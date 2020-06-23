@@ -18,12 +18,12 @@ Fudel::Fudel() {
     }
 }
 
-bool Fudel::addFile(string &path, int days) {
-    if (days <= 0)
+bool Fudel::addFile(string &path, int lifetime) {
+    if (lifetime <= 0)
         return false;
     try {
         database db(DB_NAME);
-        db << "INSERT INTO tbl_files (age,path) VALUES (?,?);" << days << path;
+        db << "INSERT INTO tbl_files (age,path) VALUES (?,?);" << lifetime << path;
         return true;
     } catch (exception& e) {
         cout << "Error: Cannot add file into database (" << e.what() << ")" << endl;
@@ -42,15 +42,15 @@ bool Fudel::removeFile(string &path) {
     }
 }
 
-bool Fudel::postponeFile(string &path, int days) {
-    if (days <= 0)
+bool Fudel::postponeFile(string &path, int lifetime) {
+    if (lifetime <= 0)
         return false;
     try {
         database db(DB_NAME);
         db << "SELECT id, age, path FROM tbl_files" >>
         [&](int id, int age, string target_path) {
             if (target_path == path) {
-                db << "UPDATE tbl_files SET age = (?) WHERE id = (?);" << (age+days) << id;
+                db << "UPDATE tbl_files SET age = (?) WHERE id = (?);" << (age+lifetime) << id;
             }
         };
     } catch (exception& e) {
@@ -106,8 +106,8 @@ int main(int argc, char *argv[]) {
     ("g,gui", "Add gui support")
     ("s,show", "Show files in the database (output in JSON format)")
     ("c,check", "Check and remove aged files")
-    ("n,new", "Add a new file that will be deleted after the specified days (-a)", cxxopts::value<std::string>())
-    ("a,age", "Set the days to wait for the new file until the deletion", cxxopts::value<int>())
+    ("n,new", "Add a new file that will be deleted after the specified lifetime (-a)", cxxopts::value<std::string>())
+    ("a,age", "Set the time to wait for the new file until the deletion", cxxopts::value<int>())
     ("p,postpone", "Increase lifetime of the specified file", cxxopts::value<std::string>())
     ("r,remove", "Remove a file from the database (not from the disk)", cxxopts::value<std::string>())
     ;

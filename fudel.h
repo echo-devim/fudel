@@ -17,9 +17,9 @@ using namespace sqlite;
 class Fudel {
     public:
     Fudel();
-    bool addFile(string &path, int days);
+    bool addFile(string &path, int lifetime);
     bool removeFile(string &path);
-    bool postponeFile(string &path, int days);
+    bool postponeFile(string &path, int lifetime);
     void showFiles();
     void checkFiles();
 };

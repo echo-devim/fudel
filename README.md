@@ -26,8 +26,8 @@ Usage:
   -s, --show          Show files in the database (output in JSON format)
   -c, --check         Check and remove aged files
   -n, --new arg       Add a new file that will be deleted after the specified
-                      days (-a)
-  -a, --age arg       Set the days to wait for the new file until the
+                      lifetime (-a)
+  -a, --age arg       Set the time to wait for the new file until the
                       deletion
   -p, --postpone arg  Increase lifetime of the specified file
   -r, --remove arg    Remove a file from the database (not from the disk)
