@@ -1,11 +1,14 @@
 #include "fudel.h"
 
 Fudel::Fudel() {
+    struct passwd *pw = getpwuid(getuid());
+    const char *homedir = pw->pw_dir;
+    dbname = string(homedir) + "/files.db";
     //Check if the database exists
-    ifstream f(DB_NAME);
+    ifstream f(dbname);
     if (!f.good()) {
         try {
-            database db(DB_NAME);
+            database db(dbname);
             db <<
                 "CREATE TABLE IF NOT EXISTS tbl_files ("
                 "   id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,"
@@ -22,7 +25,7 @@ bool Fudel::addFile(string &path, int lifetime) {
     if (lifetime <= 0)
         return false;
     try {
-        database db(DB_NAME);
+        database db(dbname);
         db << "INSERT INTO tbl_files (age,path) VALUES (?,?);" << lifetime << path;
         return true;
     } catch (exception& e) {
@@ -33,7 +36,7 @@ bool Fudel::addFile(string &path, int lifetime) {
 
 bool Fudel::removeFile(string &path) {
     try {
-        database db(DB_NAME);
+        database db(dbname);
         db << "DELETE FROM tbl_files WHERE path = (?);" << path;
         return true;
     } catch (exception& e) {
@@ -46,7 +49,7 @@ bool Fudel::postponeFile(string &path, int lifetime) {
     if (lifetime <= 0)
         return false;
     try {
-        database db(DB_NAME);
+        database db(dbname);
         db << "SELECT id, age, path FROM tbl_files" >>
         [&](int id, int age, string target_path) {
             if (target_path == path) {
@@ -61,7 +64,7 @@ bool Fudel::postponeFile(string &path, int lifetime) {
 
 void Fudel::showFiles() {
     try {
-        database db(DB_NAME);
+        database db(dbname);
         db << "SELECT id, age, path FROM tbl_files" >>
         [&](int id, int age, string path) {
             cout << "ID:" << id << ",AGE:" << age << ",PATH:" << path << endl;
@@ -74,7 +77,7 @@ void Fudel::showFiles() {
 
 void Fudel::checkFiles() {
     try {
-        database db(DB_NAME);
+        database db(dbname);
         db << "SELECT id, age, path FROM tbl_files" >>
         [&](int id, int age, string path) {
             age--;
